@@ -33,6 +33,14 @@ class Trainer:
                 self.model.load_state_dict(torch.load(args.load_model_path).state_dict())
 
         self.model = torch.nn.DataParallel(self.model)
+
+        # 冻结 pretrained_clip_model 层的参数
+        # del self.model.pretrained_clip_model.visual
+        for name, param in self.model.named_parameters():
+            # if "pretrained_clip_model" in name:
+            if args.submodule_to_be_frozen in name:
+                param.requires_grad = False
+
         self.optimizer = torch.optim.Adam(self.model.parameters(), self.args.lr,
                                           betas=(self.args.momentum, self.args.beta),
                                           weight_decay=self.args.weight_decay)
