@@ -23,6 +23,12 @@ class Recoder:
 
 
 class Logger:
+    """
+    将tensorboard的SummaryWritter包了一层，包含一个recorder，还有一个SummaryWritter；
+    在训练或验证的每个step以name-value的形式record一下对应的曲线数据，name最好用train/xxx，val/xxx这种形式，
+    这样训练和测试的曲线会显示在两个图中，在每个epoch的最后一个step在每次训练或验证的epoch循环结束时，
+    调用一次save_curves保存曲线，调用一次save_checkpoint保存模型参数；这些操作都在下面的train.py中体现。
+    """
     def __init__(self, args):
         self.writer = SummaryWriter(args.model_dir)
         self.recoder = Recoder()
